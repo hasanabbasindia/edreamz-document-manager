@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Document Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .doc {
+            margin-bottom: 10px;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 4px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Upload Document</h2>
+<form method="POST" enctype="multipart/form-data" action="/upload">
+    <input type="file" name="file" required />
+    <button type="submit">Upload</button>
+</form>
+
+<h2>Uploaded Documents</h2>
+<div th:each="doc : ${docs}" class="doc">
+    <p th:text="${doc.fileName}"></p>
+    <a th:href="@{'/delete/' + ${doc.id}}">Delete</a>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+
+    <!-- Previous Button -->
+    <a th:if="${currentPage > 0}" th:href="@{'/?page=' + ${currentPage - 1}}">Previous</a>
+    <span th:if="${currentPage == 0}" class="disabled">Previous</span>
+
+    <!-- Page Numbers -->
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+          th:classappend="${i == currentPage} ? 'current' : ''">
+        <a th:href="@{'/?page=' + ${i}}" th:text="${i + 1}"></a>
+    </span>
+
+    <!-- Next Button -->
+    <a th:if="${currentPage < totalPages - 1}" th:href="@{'/?page=' + ${currentPage + 1}}">Next</a>
+    <span th:if="${currentPage >= totalPages - 1}" class="disabled">Next</span>
+
+</div>
+
+</body>
+</html>
